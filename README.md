@@ -60,6 +60,8 @@ google-chrome \
 
 > Chrome 不在默认安装路径时，用 `CHROME_PATH` 指定可执行文件；配置目录不同时用 `TB_PROFILE` 指定，例如 `TB_PROFILE=D:\tb-profile`。
 
+> Windows 成员如果不想手动敲命令，可以把 [`docs/windows-agent-prompt.md`](docs/windows-agent-prompt.md) 里的提示词交给本机 AI 助手，按步骤执行。
+
 3. 解析店铺并抓取列表：
 
 ```bash
@@ -141,6 +143,8 @@ node enrich_shop_items.js \
 ├── taobao_shop_catalog.js   # 店铺解析 + 列表抓取（DOM）
 ├── fetch_shop_items.js      # 全量在售商品（mtop 列表接口）
 ├── enrich_shop_items.js     # 商详 / SKU 补充
+├── docs/
+│   └── windows-agent-prompt.md  # 给 Windows 成员的本机 AI 执行提示词
 ├── package.json
 └── README.md
 ```
