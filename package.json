@@ -1,0 +1,26 @@
+{
+  "name": "taobao-shop-catalog",
+  "version": "1.0.0",
+  "description": "按店铺名/ID采集淘宝天猫在售商品、SKU、价格与发货信息，输出 CSV/JSON",
+  "main": "taobao_shop_catalog.js",
+  "private": true,
+  "scripts": {
+    "catalog": "node taobao_shop_catalog.js",
+    "fetch": "node fetch_shop_items.js",
+    "enrich": "node enrich_shop_items.js"
+  },
+  "keywords": [
+    "taobao",
+    "tmall",
+    "crawler",
+    "price-comparison"
+  ],
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "playwright-core": "^1.64.1"
+  }
+}
