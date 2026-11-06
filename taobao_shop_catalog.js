@@ -16,9 +16,26 @@ const path = require('path');
 const { chromium } = require('playwright-core');
 
 const CDP = process.env.TB_CDP || 'http://127.0.0.1:9222';
-const PROFILE = process.env.TB_PROFILE || path.join(process.env.HOME, '.tbshop-profile');
+const HOME = process.env.HOME || process.env.USERPROFILE || process.cwd();
+const PROFILE = process.env.TB_PROFILE || path.join(HOME, '.tbshop-profile');
 const OUT_DIR = path.join(__dirname, 'out');
-const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+
+// 按平台自动查找 Chrome；也可用 CHROME_PATH 环境变量覆盖
+function detectChrome() {
+  if (process.env.CHROME_PATH) return process.env.CHROME_PATH;
+  const candidates =
+    process.platform === 'win32'
+      ? [
+          path.join(process.env.PROGRAMFILES || 'C:\\Program Files', 'Google', 'Chrome', 'Application', 'chrome.exe'),
+          path.join(process.env['PROGRAMFILES(X86)'] || 'C:\\Program Files (x86)', 'Google', 'Chrome', 'Application', 'chrome.exe'),
+          path.join(process.env.LOCALAPPDATA || '', 'Google', 'Chrome', 'Application', 'chrome.exe'),
+        ]
+      : process.platform === 'darwin'
+        ? ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome']
+        : ['/usr/bin/google-chrome', '/usr/bin/chromium', '/usr/bin/chromium-browser'];
+  return candidates.find((p) => p && fs.existsSync(p)) || candidates[0];
+}
+const CHROME = detectChrome();
 
 function arg(name, fallback) {
   const i = process.argv.indexOf(`--${name}`);

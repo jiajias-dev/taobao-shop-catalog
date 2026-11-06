@@ -32,13 +32,33 @@ npm install
 ```bash
 # macOS
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
-  --user-data-dir="$HOME/.tb-crawler-profile" \
+  --user-data-dir="$HOME/.tbshop-profile" \
+  --remote-debugging-port=9222 \
+  --no-first-run --no-default-browser-check \
+  https://www.taobao.com
+```
+
+```powershell
+# Windows PowerShell
+& "$env:ProgramFiles\Google\Chrome\Application\chrome.exe" `
+  --user-data-dir="$env:USERPROFILE\.tbshop-profile" `
+  --remote-debugging-port=9222 `
+  --no-first-run --no-default-browser-check `
+  https://www.taobao.com
+```
+
+```bash
+# Linux
+google-chrome \
+  --user-data-dir="$HOME/.tbshop-profile" \
   --remote-debugging-port=9222 \
   --no-first-run --no-default-browser-check \
   https://www.taobao.com
 ```
 
 在弹出的窗口里手动完成登录。脚本通过 CDP 复用这个登录态，不会读取或上传 Cookie。
+
+> Chrome 不在默认安装路径时，用 `CHROME_PATH` 指定可执行文件；配置目录不同时用 `TB_PROFILE` 指定，例如 `TB_PROFILE=D:\tb-profile`。
 
 3. 解析店铺并抓取列表：
 
@@ -109,6 +129,7 @@ node enrich_shop_items.js \
 - 商详按 **50 条/批**跑，批间冷却 **20–30 分钟**；
 - 第一次出现 `TIMEOUT` 就**立即停止**，不要用 60/120/180 秒反复重试，重试会继续加深风险分；
 - 列表接口的风控阈值比商详宽松，但同样不要并发；
+- 多人协作时不要同时跑，采集由一人执行，结果通过网盘/企微共享；
 - 被风控后至少间隔 24 小时再试，先发 1 次请求探路，成功再继续。
 
 脚本已内置上述策略：`--batch`、`--cooldown`、首次超时即停。
@@ -137,6 +158,13 @@ Chrome 长时间运行后偶发。关闭该调试实例，用同样的 `--user-d
 
 **`no var b（可能被风控/登录页）`**
 商详 HTML 被风控页替换。改用 `mtop.taobao.pcdetail.data.get`（本项目 `enrich_shop_items.js` 已采用），或等风控解除。
+
+**Windows 下 `taobao-native` / 命令找不到、中文乱码**
+- 确认已安装 Node.js 20+，`node -v` 能输出版本；
+- PowerShell 里换行用反引号 `` ` ``，不是 `\`；
+- 路径含空格时整体加引号；
+- 控制台中文乱码先执行 `chcp 65001`；
+- Chrome 不在默认目录时设置 `CHROME_PATH`。
 
 ## 贡献
 
